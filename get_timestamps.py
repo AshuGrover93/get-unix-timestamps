@@ -3,6 +3,7 @@ import datetime
 import calendar
 import math
 
+
 #pass date timestamp of month whose previous x months timestamps are required
 def getdates(data_ts, agg_type, no_times):
             
@@ -52,16 +53,16 @@ def getdates(data_ts, agg_type, no_times):
             string1 = "start_dt"+str(no_times - i)
             string2 = "end_dt"+str(no_times - i)
             
-            dates_json[string1] = start_dt
-            dates_json[string2] = end_dt
+            dates_json[string1] = int(start_dt)
+            dates_json[string2] = int(end_dt)
             
             dates_list.append(dates_json)
             
             datePassed = datetime.datetime.fromtimestamp(start_dt/1000)
             datePassed = datePassed.replace(minute=00, hour=00, second=00)
             
-                        
-        elif(agg_type=='quarter'):
+            
+        elif(agg_type in ['quarter', 'quarter_netbase']):
             
             firstdate = datePassed
             lastdate = datePassed            
@@ -69,26 +70,41 @@ def getdates(data_ts, agg_type, no_times):
             current_month = firstdate.month
             quarter=math.ceil(current_month/3.)
 
+          
             if(i==0):
-                quarter = quarter - 1
+                if(quarter==1):
+                    firstdate = datetime.datetime(year_got-1, 10, 1)
+                    lastdate  = datetime.datetime(year_got-1, 12, 31)
+                    
+                elif(quarter==2):
+                    firstdate = datetime.datetime(year_got, 1, 1)
+                    lastdate  = datetime.datetime(year_got, 3, 31)                                
                 
+                elif(quarter==3):
+                    firstdate = datetime.datetime(year_got, 4, 1)
+                    lastdate  = datetime.datetime(year_got, 6, 30)         
+                    
+                elif(quarter==4):
+                    firstdate = datetime.datetime(year_got, 7, 1)
+                    lastdate  = datetime.datetime(year_got, 9, 30)
             
-            if(quarter==1):
-                firstdate = datetime.datetime(year_got, 1, 1)
-                lastdate  = datetime.datetime(year_got, 3, 31)              
-            
-            elif(quarter==2):
-                firstdate = datetime.datetime(year_got, 4, 1)
-                lastdate  = datetime.datetime(year_got, 6, 30)                                
-            
-            elif(quarter==3):
-                firstdate = datetime.datetime(year_got, 7, 1)
-                lastdate  = datetime.datetime(year_got, 9, 30)         
-                
             else:
-                firstdate = datetime.datetime(year_got, 10, 1)
-                lastdate  = datetime.datetime(year_got, 12, 31)
-                                           
+                if(quarter==1):
+                    firstdate = datetime.datetime(year_got, 1, 1)
+                    lastdate  = datetime.datetime(year_got, 3, 31)              
+                
+                elif(quarter==2):
+                    firstdate = datetime.datetime(year_got, 4, 1)
+                    lastdate  = datetime.datetime(year_got, 6, 30)                                
+                
+                elif(quarter==3):
+                    firstdate = datetime.datetime(year_got, 7, 1)
+                    lastdate  = datetime.datetime(year_got, 9, 30)         
+                    
+                else:
+                    firstdate = datetime.datetime(year_got, 10, 1)
+                    lastdate  = datetime.datetime(year_got, 12, 31)
+                               
                 
             start_dt = (firstdate - datetime.datetime(1970,1,1)).total_seconds()*1000
             end_dt = ((lastdate - datetime.datetime(1970,1,1)).total_seconds()*1000)+(86400*1000 - 1)            
@@ -96,8 +112,8 @@ def getdates(data_ts, agg_type, no_times):
             string1 = "start_dt"+str(no_times - i)
             string2 = "end_dt"+str(no_times - i)
             
-            dates_json[string1] = start_dt
-            dates_json[string2] = end_dt
+            dates_json[string1] = int(start_dt)
+            dates_json[string2] = int(end_dt)
             
             dates_list.append(dates_json)
             
@@ -118,8 +134,8 @@ def getdates(data_ts, agg_type, no_times):
             string1 = "start_dt"+str(no_times - i)
             string2 = "end_dt"+str(no_times - i)
             
-            dates_json[string1] = start_dt
-            dates_json[string2] = end_dt
+            dates_json[string1] = int(start_dt)
+            dates_json[string2] = int(end_dt)
             
             dates_list.append(dates_json)
             
@@ -129,4 +145,8 @@ def getdates(data_ts, agg_type, no_times):
     return dates_list
 
 
-print(getdates(1540439326000, 'year', 5))
+print(getdates(1547548921000, 'month', 7))
+
+print(getdates(1560595321000, 'quarter', 2))
+
+print(getdates(1540439326000, 'year', 3))
